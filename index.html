@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Eco Learner - A fun way to learn about our planet." />
+    <title>Eco Learner</title>
+    
+    <!-- STYLES -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- TAILWIND CONFIG -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'eco-green-light': '#D4F1E4',
+              'eco-green-dark': '#1A535C',
+              'eco-blue': '#4ECDC4',
+              'eco-yellow': '#F7E733',
+              'eco-red': '#FF6B6B',
+              'adult-primary': '#2d3748',
+              'adult-secondary': '#4a5568',
+              'kid-primary': '#4299e1',
+              'kid-secondary': '#38b2ac',
+            },
+            fontFamily: {
+              'kid': ['Comic Sans MS', 'cursive', 'sans-serif'],
+              'adult': ['Inter', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- REACT & BABEL for in-browser JSX transformation -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+      /* Basic styles to ensure the app takes full height and for compatibility */
+      html, body, #root {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+        background-color: #D4F1E4; /* eco-green-light */
+      }
+      /* Tailwind Aspect Ratio Plugin Polyfill */
+      .aspect-w-16 { --tw-aspect-w: 16; }
+      .aspect-h-9 { --tw-aspect-h: 9; }
+      .aspect-w-16 {
+          position: relative;
+          padding-bottom: calc(var(--tw-aspect-h) / var(--tw-aspect-w) * 100%);
+      }
+      .aspect-w-16 > * {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          top: 0px;
+          right: 0px;
+          bottom: 0px;
+          left: 0px;
+      }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+
+    <script type="text/babel">
+    // --- START OF COMBINED APPLICATION CODE ---
+
+    // --- TYPES (as JS objects/constants) ---
+    const View = {
+      LOGIN: 'login',
+      AGE_PROMPT: 'age_prompt',
+      KIDS_SECTION: 'kids_section',
+      ADULTS_SECTION: 'adults_section',
+    };
+
+    // --- CONSTANTS ---
+    const RELIABLE_KIDS_VIDEOS = [
+      { id: 'VlRVPum9cp4', title: 'How Recycling Works!', source: 'SciShow Kids' },
+      { id: '6yCAPAqXodc', title: 'How Can I Save Water?', source: 'SciShow Kids' },
+      { id: 'SN5-DnOHQmE', title: 'What Is the Greenhouse Effect?', source: 'SciShow Kids' },
+      { id: '9_dTCWB0kNU', title: 'How Animals Find Their Way Home!', source: 'SciShow Kids' },
+      { id: 'p15IrEuhYmo', title: 'Home Sweet Habitat', source: 'CrashCourse Kids' },
+    ];
+
+    const RELIABLE_ADULTS_VIDEOS = [
+      { id: 'G4H1N_yXBiA', title: 'Climate Change Explained', source: 'National Geographic' },
+      { id: '1kUE0BZtTRc', title: 'Renewable Energy 101', source: 'National Geographic' },
+      { id: 'MR16PMp3DKE', title: 'Why is Biodiversity So Important?', source: 'TED-Ed' },
+      { id: 'zCRKvDyyHmI', title: 'The Circular Economy', source: 'Ellen MacArthur Foundation' },
+      { id: '0Puv0Pss33M', title: 'How to Save Our Planet', source: 'WWF' },
+    ];
+
+    const KIDS_QUIZ_QUESTIONS = [
+      {
+        question: 'Which of these is part of the "Three R\'s" for helping the planet?',
+        options: ['Running', 'Recycling', 'Reading', 'Rhyming'],
+        correctAnswer: 'Recycling',
+        image: 'https://picsum.photos/seed/recycle/400/250',
+        explanation: 'Recycling is when we turn used items into new materials. The three R\'s are Reduce, Reuse, and Recycle!',
+        videoUrl: RELIABLE_KIDS_VIDEOS[0].id,
+      },
+      {
+        question: 'How can you save water while brushing your teeth?',
+        options: ['Let the water run', 'Turn the tap off', 'Use a very big cup', 'Brush for only 10 seconds'],
+        correctAnswer: 'Turn the tap off',
+        image: 'https://picsum.photos/seed/water/400/250',
+        explanation: "Turning the tap off saves lots of water. Every drop counts!",
+        videoUrl: RELIABLE_KIDS_VIDEOS[1].id,
+      },
+      {
+        question: 'What do trees give us that helps us breathe?',
+        options: ['Water', 'Sunlight', 'Oxygen', 'Juice'],
+        correctAnswer: 'Oxygen',
+        image: 'https://picsum.photos/seed/tree/400/250',
+        explanation: "Trees are amazing! They take in a gas called carbon dioxide and release oxygen, which we need to breathe.",
+        videoUrl: RELIABLE_KIDS_VIDEOS[2].id,
+      },
+      {
+        question: 'What traps heat in our atmosphere and makes the Earth warmer?',
+        options: ['Big blankets', 'Greenhouse gases', 'Clouds', 'The Moon'],
+        correctAnswer: 'Greenhouse gases',
+        image: 'https://picsum.photos/seed/greenhouse/400/250',
+        explanation: 'Greenhouse gases act like a blanket around Earth, trapping the sun\'s heat and making our planet warmer.',
+        videoUrl: RELIABLE_KIDS_VIDEOS[3].id,
+      },
+      {
+        question: 'What is a habitat?',
+        options: ['A fun habit', 'An animal\'s home', 'A type of vegetable', 'A school subject'],
+        correctAnswer: 'An animal\'s home',
+        image: 'https://picsum.photos/seed/habitat/400/250',
+        explanation: "A habitat is the natural home or environment of an animal, plant, or other organism. We must protect them!",
+        videoUrl: RELIABLE_KIDS_VIDEOS[4].id,
+      },
+    ];
+
+    const KIDS_LEARNING_TOPICS = [
+      { title: RELIABLE_KIDS_VIDEOS[0].title, description: 'Learn the three R\'s to help our planet!', videoId: RELIABLE_KIDS_VIDEOS[0].id, thumbnail: `https://img.youtube.com/vi/${RELIABLE_KIDS_VIDEOS[0].id}/mqdefault.jpg` },
+      { title: RELIABLE_KIDS_VIDEOS[1].title, description: 'Fun ways to save water every day.', videoId: RELIABLE_KIDS_VIDEOS[1].id, thumbnail: `https://img.youtube.com/vi/${RELIABLE_KIDS_VIDEOS[1].id}/mqdefault.jpg` },
+      { title: RELIABLE_KIDS_VIDEOS[2].title, description: 'Discover why trees are our best friends.', videoId: RELIABLE_KIDS_VIDEOS[2].id, thumbnail: `https://img.youtube.com/vi/${RELIABLE_KIDS_VIDEOS[2].id}/mqdefault.jpg` },
+      { title: RELIABLE_KIDS_VIDEOS[3].title, description: 'Learn about climate change and how to help.', videoId: RELIABLE_KIDS_VIDEOS[3].id, thumbnail: `https://img.youtube.com/vi/${RELIABLE_KIDS_VIDEOS[3].id}/mqdefault.jpg` },
+      { title: RELIABLE_KIDS_VIDEOS[4].title, description: 'Explore different animal habitats.', videoId: RELIABLE_KIDS_VIDEOS[4].id, thumbnail: `https://img.youtube.com/vi/${RELIABLE_KIDS_VIDEOS[4].id}/mqdefault.jpg` },
+    ];
+
+    const KIDS_VIDEOS = RELIABLE_KIDS_VIDEOS.map(v => ({
+        title: v.title,
+        videoId: v.id,
+        thumbnail: `https://img.youtube.com/vi/${v.id}/mqdefault.jpg`
+    }));
+
+    const ADULTS_QUIZ_QUESTIONS = [
+      {
+        question: 'What is the primary cause of the current climate change crisis?',
+        options: ['Volcanic Eruptions', 'Deforestation', 'Burning of Fossil Fuels', 'Solar Flares'],
+        correctAnswer: 'Burning of Fossil Fuels',
+        explanation: 'The burning of fossil fuels (coal, oil, and gas) for energy is the single largest source of greenhouse gas emissions, trapping heat in the atmosphere.',
+        videoUrl: RELIABLE_ADULTS_VIDEOS[0].id,
+      },
+      {
+        question: 'Which of these is a renewable energy source?',
+        options: ['Natural Gas', 'Coal', 'Solar Power', 'Petroleum'],
+        correctAnswer: 'Solar Power',
+        explanation: 'Renewable energy sources like solar, wind, and hydro are naturally replenished and are a critical alternative to fossil fuels.',
+        videoUrl: RELIABLE_ADULTS_VIDEOS[1].id,
+      },
+      {
+        question: 'The term "biodiversity" refers to:',
+        options: ['The variety of life on Earth', 'The study of biographies', 'A type of energy', 'The recycling process'],
+        correctAnswer: 'The variety of life on Earth',
+        explanation: 'Biodiversity encompasses all living things, from the smallest bacteria to the largest whales. Its loss threatens ecosystems and our own well-being.',
+        videoUrl: RELIABLE_ADULTS_VIDEOS[2].id,
+      },
+      {
+        question: 'What is the goal of a "circular economy"?',
+        options: ['To maximize profits', 'To eliminate waste and pollution', 'To increase consumption', 'To build more factories'],
+        correctAnswer: 'To eliminate waste and pollution',
+        explanation: 'A circular economy aims to move away from the "take-make-waste" model by designing products that are durable, reusable, and recyclable.',
+        videoUrl: RELIABLE_ADULTS_VIDEOS[3].id,
+      },
+      {
+        question: 'What is a major threat to our planet that involves the loss of natural habitats and species?',
+        options: ['Urbanization', 'Deforestation', 'Pollution', 'All of the above'],
+        correctAnswer: 'All of the above',
+        explanation: 'Saving our planet requires a holistic approach, addressing everything from habitat loss and deforestation to plastic pollution and climate change.',
+        videoUrl: RELIABLE_ADULTS_VIDEOS[4].id,
+      },
+    ];
+
+    const ADULTS_LEARNING_TOPICS = [
+      { title: RELIABLE_ADULTS_VIDEOS[0].title, description: 'Understand the science and impact of global warming.', videoId: RELIABLE_ADULTS_VIDEOS[0].id, thumbnail: `https://img.youtube.com/vi/${RELIABLE_ADULTS_VIDEOS[0].id}/mqdefault.jpg` },
+      { title: RELIABLE_ADULTS_VIDEOS[1].title, description: 'Exploring solar, wind, and other clean energy solutions.', videoId: RELIABLE_ADULTS_VIDEOS[1].id, thumbnail: `https://img.youtube.com/vi/${RELIABLE_ADULTS_VIDEOS[1].id}/mqdefault.jpg` },
+      { title: RELIABLE_ADULTS_VIDEOS[2].title, description: 'Why the variety of life on Earth is crucial for our survival.', videoId: RELIABLE_ADULTS_VIDEOS[2].id, thumbnail: `https://img.youtube.com/vi/${RELIABLE_ADULTS_VIDEOS[2].id}/mqdefault.jpg` },
+      { title: RELIABLE_ADULTS_VIDEOS[3].title, description: 'Moving from a "take-make-waste" system to a sustainable, circular model.', videoId: RELIABLE_ADULTS_VIDEOS[3].id, thumbnail: `https://img.youtube.com/vi/${RELIABLE_ADULTS_VIDEOS[3].id}/mqdefault.jpg` },
+      { title: RELIABLE_ADULTS_VIDEOS[4].title, description: 'An overview of the challenges and solutions for protecting Earth.', videoId: RELIABLE_ADULTS_VIDEOS[4].id, thumbnail: `https://img.youtube.com/vi/${RELIABLE_ADULTS_VIDEOS[4].id}/mqdefault.jpg` },
+    ];
+
+    const ADULTS_VIDEOS = RELIABLE_ADULTS_VIDEOS.map(v => ({
+        title: v.title,
+        videoId: v.id,
+        thumbnail: `https://img.youtube.com/vi/${v.id}/mqdefault.jpg`
+    }));
+
+    const KIDS_LEADERBOARD_DATA = [
+        { rank: 1, username: 'EcoExplorer', score: 1500, avatar: 'fas fa-rocket' },
+        { rank: 2, username: 'TreeHugger', score: 1350, avatar: 'fas fa-tree' },
+        { rank: 3, username: 'WaterWizard', score: 1200, avatar: 'fas fa-tint' },
+        { rank: 4, username: 'RecyclePro', score: 1100, avatar: 'fas fa-recycle' },
+        { rank: 5, username: 'PlanetPal', score: 950, avatar: 'fas fa-user-astronaut' }
+    ];
+
+    const ADULTS_LEADERBOARD_DATA = [
+        { rank: 1, username: 'GreenGuardian', score: 2150, avatar: 'fas fa-shield-alt' },
+        { rank: 2, username: 'EcoInnovator', score: 1980, avatar: 'fas fa-lightbulb' },
+        { rank: 3, username: 'SustainStar', score: 1820, avatar: 'fas fa-star' },
+        { rank: 4, username: 'ClimateAction', score: 1700, avatar: 'fas fa-chart-line' },
+        { rank: 5, username: 'ZeroWasteHero', score: 1650, avatar: 'fas fa-leaf' }
+    ];
+
+    const BADGES = [
+      { name: 'Eco Starter', icon: 'fas fa-seedling', description: 'Completed your first activity!', minScore: 10 },
+      { name: 'Recycle Rookie', icon: 'fas fa-recycle', description: 'Mastered the art of recycling.', minScore: 100 },
+      { name: 'Water Saver', icon: 'fas fa-tint', description: 'You are a water conservation champion!', minScore: 250 },
+      { name: 'Energy Expert', icon: 'fas fa-bolt', description: 'Knows how to save energy like a pro.', minScore: 500 },
+      { name: 'Planet Hero', icon: 'fas fa-globe-americas', description: 'A true hero for our planet.', minScore: 1000 },
+    ];
+
+    const ADULTS_ECO_CHALLENGES = [
+      { 
+        title: 'Meat-Free Monday', 
+        description: 'Skip meat for a day. Livestock farming has a significant environmental footprint.',
+        icon: 'fas fa-seedling',
+        points: 30,
+      },
+      { 
+        title: 'No Single-Use Plastic', 
+        description: 'For one day, refuse all single-use plastics like straws, bags, and cutlery.',
+        icon: 'fas fa-shopping-bag',
+        points: 40,
+      },
+      { 
+        title: 'Energy Audit', 
+        description: 'Unplug "vampire" electronics that draw power even when off. Check your home for energy leaks.',
+        icon: 'fas fa-plug',
+        points: 25,
+      },
+      { 
+        title: 'Mindful Commute', 
+        description: 'Choose to walk, bike, or use public transport instead of driving for one trip.',
+        icon: 'fas fa-bicycle',
+        points: 35,
+      }
+    ];
+
+    // --- SHARED COMPONENTS ---
+
+    const YoutubeEmbed = ({ embedId, title }) => (
+      <div className="aspect-w-16 aspect-h-9">
+        <iframe
+          key={embedId}
+          width="100%"
+          height="100%"
+          src={`https://www.youtube-nocookie.com/embed/${embedId}`}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title={title}
+          className="rounded-lg shadow-lg"
+        />
+      </div>
+    );
+
+    const Quiz = ({ questions, isKid, onQuizComplete }) => {
+      const { useState } = React;
+      const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+      const [score, setScore] = useState(0);
+      const [selectedAnswer, setSelectedAnswer] = useState(null);
+      const [showSummary, setShowSummary] = useState(false);
+      const [isCorrect, setIsCorrect] = useState(null);
+      const [quizFinished, setQuizFinished] = useState(false);
+      const [adultsAnswers, setAdultsAnswers] = useState([]);
+      const [expandedVideo, setExpandedVideo] = useState(null);
+
+      const currentQuestion = questions[currentQuestionIndex];
+      const pointsPerQuestion = isKid ? 20 : 50;
+
+      const handleAnswerClick = (answer) => {
+        if (selectedAnswer) return;
+
+        const correct = answer === currentQuestion.correctAnswer;
+        setSelectedAnswer(answer);
+        setIsCorrect(correct);
+
+        if (correct) {
+          setScore(prev => prev + pointsPerQuestion);
+        }
+        
+        if (isKid) {
+          setShowSummary(true);
+        } else {
+            setAdultsAnswers([...adultsAnswers, { 
+                question: currentQuestion.question,
+                selected: answer,
+                correct: currentQuestion.correctAnswer,
+                isCorrect: correct,
+                explanation: currentQuestion.explanation,
+                videoUrl: currentQuestion.videoUrl
+            }]);
+            setTimeout(nextQuestion, 1000);
+        }
+      };
+
+      const nextQuestion = () => {
+        setShowSummary(false);
+        setSelectedAnswer(null);
+        setIsCorrect(null);
+        setExpandedVideo(null);
+
+        if (currentQuestionIndex < questions.length - 1) {
+          setCurrentQuestionIndex(prev => prev + 1);
+        } else {
+          setQuizFinished(true);
+          if(!isKid) {
+            setShowSummary(true);
+          }
+          onQuizComplete(score);
+        }
+      };
+      
+      const kidSummary = () => (
+        <div className="mt-4 p-6 bg-white rounded-xl shadow-lg text-center font-kid">
+          <h3 className={`text-3xl font-bold mb-2 ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+            {isCorrect ? 'Awesome!' : 'Oops!'}
+          </h3>
+          <p className="text-gray-700 text-lg mb-4">{currentQuestion.explanation}</p>
+          {currentQuestion.videoUrl && (
+            <div className="my-4">
+                <p className="font-bold text-xl mb-2 text-kid-primary">Watch & Learn!</p>
+                <YoutubeEmbed embedId={currentQuestion.videoUrl} title="Solution Video" />
+            </div>
+          )}
+          <button onClick={nextQuestion} className="bg-kid-primary text-white font-bold py-3 px-8 rounded-full text-xl hover:bg-kid-secondary transition-transform hover:scale-105">
+            {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Quiz'}
+          </button>
+        </div>
+      );
+      
+      const adultsFinalSummary = () => (
+          <div className="p-8 bg-white rounded-lg shadow-xl font-adult max-w-4xl mx-auto">
+              <h2 className="text-4xl font-bold text-adult-primary mb-4 text-center">Quiz Complete!</h2>
+              <p className="text-2xl text-gray-700 mb-8 text-center">You scored <span className="font-bold text-eco-blue">{score}</span> points!</p>
+              <div className="space-y-6 text-left">
+                  {adultsAnswers.map((ans, index) => (
+                      <div key={index} className={`p-4 rounded-lg border-l-4 ${ans.isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+                          <p className="font-semibold text-lg text-gray-800">{index + 1}. {ans.question}</p>
+                          <p className={`mt-2 ${ans.isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                              Your answer: <span className="font-medium">{ans.selected}</span>
+                              {!ans.isCorrect && <span className="ml-2 font-medium text-gray-600">(Correct: {ans.correct})</span>}
+                          </p>
+                           <p className="mt-2 text-sm text-gray-600">{ans.explanation}</p>
+                           {ans.videoUrl && (
+                             <div className="mt-3">
+                                <button onClick={() => setExpandedVideo(expandedVideo === ans.videoUrl ? null : ans.videoUrl)} className="text-sm text-eco-blue font-semibold hover:underline">
+                                    {expandedVideo === ans.videoUrl ? 'Hide' : 'Show'} Video Solution <i className={`fas fa-chevron-down transition-transform ${expandedVideo === ans.videoUrl ? 'rotate-180' : ''}`}></i>
+                                </button>
+                                {expandedVideo === ans.videoUrl && (
+                                    <div className="mt-2">
+                                        <YoutubeEmbed embedId={ans.videoUrl} title={`Solution for ${ans.question}`} />
+                                    </div>
+                                )}
+                             </div>
+                           )}
+                      </div>
+                  ))}
+              </div>
+          </div>
+      );
+
+      if (quizFinished && !isKid) {
+          return adultsFinalSummary();
+      }
+
+      if (quizFinished && isKid) {
+        return (
+            <div className="p-8 bg-white rounded-2xl shadow-2xl text-center font-kid">
+                <h2 className="text-5xl font-bold text-kid-primary mb-4">You did it!</h2>
+                <i className="fas fa-trophy text-7xl text-eco-yellow mb-6"></i>
+                <p className="text-3xl text-gray-700">You finished the quiz and scored <span className="font-bold text-kid-secondary">{score}</span> points!</p>
+            </div>
+        );
+      }
+
+      return (
+        <div className={`p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg ${isKid ? 'bg-gradient-to-br from-blue-200 to-cyan-200 font-kid' : 'bg-gray-100 font-adult'}`}>
+          <div className="flex justify-between items-center mb-4">
+            <p className={`text-xl font-bold ${isKid ? 'text-kid-primary' : 'text-adult-primary'}`}>
+              Question {currentQuestionIndex + 1} / {questions.length}
+            </p>
+            <p className={`text-xl font-bold ${isKid ? 'text-kid-secondary' : 'text-eco-blue'}`}>Score: {score}</p>
+          </div>
+          
+          {currentQuestion.image && isKid && (
+            <img src={currentQuestion.image} alt="Quiz visual" className="w-full h-48 object-cover rounded-xl mb-6 shadow-md" />
+          )}
+
+          <h2 className={`text-2xl md:text-3xl font-bold mb-6 ${isKid ? 'text-gray-800' : 'text-adult-primary'}`}>{currentQuestion.question}</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {currentQuestion.options.map(option => {
+              const isSelected = selectedAnswer === option;
+              const isCorrectAnswer = currentQuestion.correctAnswer === option;
+              
+              let buttonClass = `w-full p-4 rounded-lg text-lg font-semibold transition-all duration-200 text-left ${
+                isKid ? 'rounded-full text-white' : 'rounded-lg border-2'
+              }`;
+
+              if (isSelected) {
+                buttonClass += isCorrect ? (isKid ? ' bg-green-500' : ' bg-green-100 border-green-500 text-green-800') : (isKid ? ' bg-red-500' : ' bg-red-100 border-red-500 text-red-800');
+              } else if (showSummary && isCorrectAnswer) {
+                 buttonClass += isKid ? ' bg-green-500' : ' bg-green-100 border-green-500 text-green-800';
+              } else {
+                buttonClass += isKid ? ' bg-kid-primary hover:bg-kid-secondary' : ' bg-white border-gray-300 hover:bg-gray-50 hover:border-eco-blue text-gray-700';
+              }
+              
+              return (
+                <button key={option} onClick={() => handleAnswerClick(option)} disabled={!!selectedAnswer} className={buttonClass}>
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+
+          {showSummary && isKid && kidSummary()}
+        </div>
+      );
+    };
+    
+    const Leaderboard = ({ data, user, isKid }) => {
+      const sortedData = [...data, { rank: 0, username: user.username, score: user.score, avatar: 'fas fa-user' }]
+        .sort((a, b) => b.score - a.score)
+        .map((item, index) => ({ ...item, rank: index + 1 }));
+
+      const currentUser = sortedData.find(u => u.username === user.username);
+      const isUserInTop = data.some(u => u.username === user.username);
+      
+      const KidsLeaderboard = () => (
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-2xl font-kid max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <i className="fas fa-trophy text-7xl text-eco-yellow" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))' }}></i>
+            <h2 className="text-5xl font-extrabold text-eco-green-dark mt-2">Top Planet Heroes</h2>
+          </div>
+          <div className="space-y-4">
+            {sortedData.slice(0, 5).map((entry) => {
+              const isCurrentUser = entry.username === user.username;
+              return (
+                <div key={entry.rank} className={`flex items-center p-4 rounded-xl transition-all duration-300 ${isCurrentUser ? 'bg-eco-yellow scale-105 shadow-lg' : 'bg-white/80'}`}>
+                  <span className="text-3xl font-bold w-12 text-center text-kid-secondary">{entry.rank}</span>
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="w-12 h-12 rounded-full bg-kid-primary text-white flex items-center justify-center text-2xl">
+                        <i className={entry.avatar}></i>
+                    </div>
+                    <span className="text-2xl font-semibold text-gray-800">{entry.username}{isCurrentUser && ' (You!)'}</span>
+                  </div>
+                  <span className="text-3xl font-bold text-eco-green-dark">{entry.score} pts</span>
+                </div>
+              );
+            })}
+          </div>
+           {!isUserInTop && currentUser && (
+             <>
+                <div className="text-center text-4xl my-6">...</div>
+                <div className="flex items-center p-4 rounded-xl bg-eco-yellow scale-105 shadow-lg">
+                    <span className="text-3xl font-bold w-12 text-center text-kid-secondary">{currentUser.rank}</span>
+                    <div className="flex items-center gap-4 flex-1">
+                        <div className="w-12 h-12 rounded-full bg-kid-primary text-white flex items-center justify-center text-2xl">
+                            <i className={currentUser.avatar}></i>
+                        </div>
+                        <span className="text-2xl font-semibold text-gray-800">{currentUser.username} (You!)</span>
+                    </div>
+                    <span className="text-3xl font-bold text-eco-green-dark">{currentUser.score} pts</span>
+                </div>
+             </>
+          )}
+        </div>
+      );
+      
+      const AdultsLeaderboard = () => (
+         <div className="bg-white p-8 rounded-lg shadow-lg font-adult max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold text-adult-primary mb-6 border-b pb-4">Leaderboard</h2>
+          <div className="flow-root">
+            <ul role="list" className="divide-y divide-gray-200">
+              {sortedData.slice(0, 5).map((entry) => {
+                 const isCurrentUser = entry.username === user.username;
+                return (
+                  <li key={entry.rank} className={`py-4 px-2 rounded-md ${isCurrentUser ? 'bg-eco-green-light' : ''}`}>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0 w-8 text-center">
+                        <span className="text-lg font-bold text-gray-500">{entry.rank}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-lg font-medium text-gray-900 truncate">
+                          {entry.username}{isCurrentUser && ' (You)'}
+                        </p>
+                      </div>
+                      <div className="inline-flex items-center text-lg font-semibold text-eco-blue">
+                        {entry.score} points
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          {!isUserInTop && currentUser && (
+            <div className="mt-6 border-t-2 border-dashed pt-4">
+                <div className="py-4 px-2 rounded-md bg-eco-green-light">
+                     <div className="flex items-center space-x-4">
+                         <div className="flex-shrink-0 w-8 text-center">
+                            <span className="text-lg font-bold text-gray-500">{currentUser.rank}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-lg font-medium text-gray-900 truncate">
+                                {currentUser.username} (You)
+                            </p>
+                        </div>
+                        <div className="inline-flex items-center text-lg font-semibold text-eco-blue">
+                            {currentUser.score} points
+                        </div>
+                     </div>
+                </div>
+            </div>
+          )}
+        </div>
+      );
+
+      return isKid ? <KidsLeaderboard /> : <AdultsLeaderboard />;
+    };
+
+    const VideoGallery = ({ videos, isKid }) => {
+      const { useState } = React;
+      const [selectedVideo, setSelectedVideo] = useState(videos[0] || null);
+
+      const containerClass = isKid 
+        ? "font-kid" 
+        : "font-adult";
+      
+      const headerClass = isKid
+        ? "text-5xl font-bold text-white mb-6 text-center"
+        : "text-4xl font-bold text-adult-primary mb-6 border-b-2 border-gray-200 pb-2";
+
+      const listContainerClass = isKid
+        ? "w-full lg:w-1/3 bg-white/70 backdrop-blur-sm p-4 rounded-2xl shadow-lg max-h-[70vh] overflow-y-auto"
+        : "w-full lg:w-1/3 bg-white p-4 rounded-lg shadow-md max-h-[75vh] overflow-y-auto";
+
+      const videoContainerClass = isKid
+        ? "w-full lg:w-2/3 bg-white/70 backdrop-blur-sm p-4 rounded-2xl shadow-lg"
+        : "w-full lg:w-2/3";
+      
+      const videoPlayerWrapperClass = isKid ? "" : "bg-white p-4 rounded-lg shadow-md";
+
+      return (
+        <div className={containerClass}>
+          <h2 className={headerClass} style={isKid ? { textShadow: '2px 2px 4px rgba(0,0,0,0.5)' } : {}}>
+            Video Center
+          </h2>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className={videoContainerClass}>
+              {selectedVideo ? (
+                <div className={videoPlayerWrapperClass}>
+                  <YoutubeEmbed embedId={selectedVideo.videoId} title={selectedVideo.title} />
+                  <h3 className={`mt-4 ${isKid ? 'text-3xl font-bold text-eco-green-dark' : 'text-2xl font-bold text-adult-primary'}`}>{selectedVideo.title}</h3>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-2xl text-gray-500">Select a video to watch!</p>
+                </div>
+              )}
+            </div>
+
+            <div className={listContainerClass}>
+              <h3 className={`mb-4 ${isKid ? 'text-3xl font-bold text-kid-secondary' : 'text-xl font-bold text-adult-secondary'}`}>
+                More Videos
+              </h3>
+              <div className="space-y-4">
+                {videos.map(video => (
+                  <button
+                    key={video.videoId}
+                    onClick={() => setSelectedVideo(video)}
+                    className={`w-full flex items-center gap-4 p-3 rounded-xl text-left transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
+                      isKid 
+                      ? (selectedVideo?.videoId === video.videoId ? 'bg-eco-yellow shadow-lg' : 'bg-white')
+                      : (selectedVideo?.videoId === video.videoId ? 'bg-eco-green-light' : 'hover:bg-gray-100')
+                    }`}
+                  >
+                    <img src={video.thumbnail} alt={video.title} className="w-24 h-16 rounded-lg object-cover" />
+                    <div>
+                      <h4 className={`font-bold ${isKid ? 'text-xl text-eco-green-dark' : 'text-md text-adult-primary'}`}>{video.title}</h4>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+
+    // --- KIDS COMPONENTS ---
+    
+    const KidsLearning = ({ topics }) => {
+      const { useState } = React;
+      const [selectedTopic, setSelectedTopic] = useState(topics[0]);
+
+      return (
+        <div className="font-kid">
+          <h2 className="text-5xl font-bold text-white mb-6 text-center" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+            Explore & Learn
+          </h2>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="w-full lg:w-2/3 bg-white/70 backdrop-blur-sm p-4 rounded-2xl shadow-lg">
+              {selectedTopic ? (
+                <div>
+                  <YoutubeEmbed embedId={selectedTopic.videoId} title={selectedTopic.title} />
+                  <h3 className="text-3xl font-bold text-eco-green-dark mt-4">{selectedTopic.title}</h3>
+                  <p className="text-gray-700 mt-2 text-lg">{selectedTopic.description}</p>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-2xl text-gray-500">Select a topic to watch a video!</p>
+                </div>
+              )}
+            </div>
+
+            <div className="w-full lg:w-1/3 bg-white/70 backdrop-blur-sm p-4 rounded-2xl shadow-lg max-h-[70vh] overflow-y-auto">
+              <h3 className="text-3xl font-bold text-kid-secondary mb-4">Topics</h3>
+              <div className="space-y-4">
+                {topics.map(topic => (
+                  <button
+                    key={topic.title}
+                    onClick={() => setSelectedTopic(topic)}
+                    className={`w-full flex items-center gap-4 p-3 rounded-xl text-left transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${selectedTopic?.title === topic.title ? 'bg-eco-yellow shadow-lg' : 'bg-white'}`}
+                  >
+                    <img src={topic.thumbnail} alt={topic.title} className="w-24 h-16 rounded-lg object-cover" />
+                    <div>
+                      <h4 className="font-bold text-xl text-eco-green-dark">{topic.title}</h4>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const TrashSorterGame = ({ onGameComplete }) => {
+      const { useState, useCallback } = React;
+      
+      const initialTrashItems = [
+        { id: 1, name: 'Plastic Bottle', icon: 'fas fa-bottle-water', category: 'recycle' },
+        { id: 2, name: 'Apple Core', icon: 'fas fa-apple-alt', category: 'compost' },
+        { id: 3, name: 'Candy Wrapper', icon: 'fas fa-candy-cane', category: 'trash' },
+        { id: 4, name: 'Newspaper', icon: 'far fa-newspaper', category: 'recycle' },
+        { id: 5, name: 'Banana Peel', icon: 'fas fa-carrot', category: 'compost' }, 
+        { id: 6, name: 'Glass Jar', icon: 'fas fa-wine-bottle', category: 'recycle'},
+        { id: 7, name: 'Chip Bag', icon: 'fas fa-cookie', category: 'trash'},
+      ];
+
+      const bins = [
+        { category: 'recycle', name: 'Recycle', color: 'bg-blue-500', icon: 'fas fa-recycle' },
+        { category: 'compost', name: 'Compost', color: 'bg-green-600', icon: 'fas fa-leaf' },
+        { category: 'trash', name: 'Trash', color: 'bg-gray-700', icon: 'fas fa-trash-alt' },
+      ];
+
+      const [trashItems, setTrashItems] = useState(initialTrashItems);
+      const [score, setScore] = useState(0);
+      const [feedback, setFeedback] = useState(null);
+
+      const handleDragStart = (e, item) => {
+        e.dataTransfer.setData('application/json', JSON.stringify(item));
+      };
+      
+      const handleDragOver = (e) => {
+        e.preventDefault();
+      };
+
+      const handleDrop = (e, binCategory) => {
+        e.preventDefault();
+        const item = JSON.parse(e.dataTransfer.getData('application/json'));
+        
+        if (item.category === binCategory) {
+          setScore(s => s + 15);
+          setTrashItems(items => items.filter(i => i.id !== item.id));
+          setFeedback({ message: 'Great job!', type: 'success' });
+        } else {
+          setScore(s => s - 5);
+          setFeedback({ message: `Oops! ${item.name} doesn't go there.`, type: 'error' });
+        }
+        setTimeout(() => setFeedback(null), 1500);
+      };
+      
+      const handleGameEnd = useCallback(() => {
+         onGameComplete(score);
+      }, [onGameComplete, score]);
+      
+      if (trashItems.length === 0) {
+        return (
+            <div className="text-center p-8 bg-white/80 rounded-2xl shadow-lg font-kid">
+                <h2 className="text-4xl font-bold text-eco-green-dark mb-4">All Clean!</h2>
+                <i className="fas fa-party-popper text-6xl text-eco-yellow"></i>
+                <p className="text-2xl mt-4">You sorted everything! Your final score is <span className="font-bold text-kid-primary">{score}</span> points.</p>
+                <button onClick={handleGameEnd} className="mt-6 bg-kid-secondary text-white font-bold py-3 px-6 rounded-full text-xl hover:scale-105 transition-transform">
+                    Claim Points
+                </button>
+            </div>
+        );
+      }
+
+      return (
+        <div className="p-6 bg-white/80 rounded-2xl shadow-lg font-kid">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-3xl font-bold text-eco-green-dark">Trash Sorter!</h2>
+            <div className="text-2xl font-bold text-kid-secondary">Score: {score}</div>
+          </div>
+          <p className="text-gray-600 mb-6">Drag the items to the correct bin.</p>
+
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            {bins.map(bin => (
+              <div
+                key={bin.category}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, bin.category)}
+                className={`p-6 rounded-2xl text-white text-center flex flex-col items-center justify-center transition-all duration-300 border-4 border-dashed border-transparent hover:border-white ${bin.color}`}
+              >
+                <i className={`${bin.icon} text-4xl mb-2`}></i>
+                <span className="text-2xl font-bold">{bin.name}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-4 p-4 bg-gray-200 rounded-lg min-h-[120px]">
+            {trashItems.map(item => (
+              <div
+                key={item.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e, item)}
+                className="p-4 bg-white rounded-lg shadow-md cursor-grab flex flex-col items-center w-32 hover:scale-110 transition-transform"
+              >
+                <i className={`${item.icon} text-4xl text-gray-700`}></i>
+                <span className="mt-2 text-center font-semibold">{item.name}</span>
+              </div>
+            ))}
+          </div>
+          
+          {feedback && (
+            <div className={`fixed bottom-10 right-10 p-4 rounded-lg text-white font-bold text-xl shadow-2xl ${feedback.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+              {feedback.message}
+            </div>
+          )}
+        </div>
+      );
+    };
+    
+    const KidsSection = ({ user, onLogout, onUpdateScore }) => {
+      const { useState } = React;
+      const [activeTab, setActiveTab] = useState('home');
+
+      const navItems = [
+        { id: 'home', icon: 'fas fa-home', label: 'Home' },
+        { id: 'quiz', icon: 'fas fa-question-circle', label: 'Quiz' },
+        { id: 'learn', icon: 'fas fa-book-open', label: 'Learn' },
+        { id: 'videos', icon: 'fas fa-video', label: 'Videos' },
+        { id: 'games', icon: 'fas fa-gamepad', label: 'Games' },
+        { id: 'leaderboard', icon: 'fas fa-trophy', label: 'Ranks' },
+      ];
+      
+      const UserProfile = ({ user }) => (
+        <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl flex flex-col items-center text-center font-kid">
+            <div className="relative">
+                <img src={`https://picsum.photos/seed/${user.username}/100`} alt="avatar" className="w-24 h-24 rounded-full border-4 border-eco-yellow shadow-lg" />
+                <span className="absolute bottom-0 right-0 bg-kid-secondary text-white text-xs font-bold px-2 py-1 rounded-full">{user.score} pts</span>
+            </div>
+            <h3 className="text-xl font-bold text-eco-green-dark mt-3">{user.username}</h3>
+            <div className="flex space-x-2 mt-2">
+                {BADGES.filter(b => user.score >= b.minScore).map(badge => (
+                    <div key={badge.name} className="group relative">
+                        <i className={`${badge.icon} text-2xl text-eco-yellow`}></i>
+                        <div className="absolute bottom-full mb-2 w-max px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            {badge.name}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+      );
+
+      const getGardenStage = (score) => {
+        if (score < 50) {
+          return { icon: 'fas fa-seedling', text: 'Your little seedling is just starting to grow! Keep learning!', color: 'text-yellow-500' };
+        } else if (score < 200) {
+          return { icon: 'fab fa-pagelines', text: 'Look! It\'s a sprout! You\'re doing great!', color: 'text-lime-500' };
+        } else if (score < 500) {
+          return { icon: 'fas fa-leaf', text: 'Your plant is getting bigger. Amazing!', color: 'text-green-500' };
+        } else {
+          return { icon: 'fas fa-tree', text: 'Wow! A big, strong tree! You are a true Planet Hero!', color: 'text-emerald-700' };
+        }
+      };
+
+      const renderContent = () => {
+        switch (activeTab) {
+          case 'home':
+            const gardenStage = getGardenStage(user.score);
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <UserProfile user={user} />
+                 <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl font-kid text-center">
+                    <h2 className="text-3xl font-bold text-eco-green-dark mb-4">Your Eco Garden</h2>
+                    <i className={`${gardenStage.icon} ${gardenStage.color} text-8xl my-4 transition-all duration-500`}></i>
+                    <p className="text-gray-700 text-lg mb-6">{gardenStage.text}</p>
+                     <div className="grid grid-cols-2 gap-4">
+                         <button onClick={() => setActiveTab('quiz')} className="bg-eco-red text-white p-4 rounded-lg flex flex-col items-center justify-center space-y-2 hover:scale-105 transition-transform">
+                             <i className="fas fa-question-circle text-3xl"></i>
+                             <span className="font-bold">Quiz Time</span>
+                         </button>
+                          <button onClick={() => setActiveTab('games')} className="bg-eco-yellow text-eco-green-dark p-4 rounded-lg flex flex-col items-center justify-center space-y-2 hover:scale-105 transition-transform">
+                             <i className="fas fa-gamepad text-3xl"></i>
+                             <span className="font-bold">Fun Games</span>
+                         </button>
+                     </div>
+                </div>
+              </div>
+            );
+          case 'quiz':
+            return <Quiz questions={KIDS_QUIZ_QUESTIONS} isKid={true} onQuizComplete={onUpdateScore} />;
+          case 'learn':
+            return <KidsLearning topics={KIDS_LEARNING_TOPICS} />;
+          case 'videos':
+            return <VideoGallery videos={KIDS_VIDEOS} isKid={true} />;
+          case 'games':
+            return <TrashSorterGame onGameComplete={onUpdateScore} />;
+          case 'leaderboard':
+            return <Leaderboard data={KIDS_LEADERBOARD_DATA} user={user} isKid={true} />;
+          default:
+            return <div>Home</div>;
+        }
+      };
+
+      return (
+        <div className="min-h-screen bg-cover bg-center" style={{backgroundImage: "url('https://picsum.photos/seed/kid-bg/1920/1080')"}}>
+          <div className="min-h-screen bg-eco-green-light/80 backdrop-blur-sm flex">
+            <nav className="w-24 bg-eco-green-dark p-4 flex flex-col items-center justify-between shadow-2xl">
+                <div>
+                  <div className="p-2 bg-white rounded-full mb-8">
+                      <i className="fas fa-leaf text-4xl text-eco-green-dark"></i>
+                  </div>
+                  <ul className="space-y-6">
+                    {navItems.map(item => (
+                      <li key={item.id}>
+                        <button
+                          onClick={() => setActiveTab(item.id)}
+                          className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl transition-all duration-300 ${activeTab === item.id ? 'bg-eco-blue text-white scale-110' : 'bg-white/20 text-eco-green-light hover:bg-eco-blue/50'}`}
+                          title={item.label}
+                        >
+                          <i className={item.icon}></i>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <button onClick={onLogout} title="Logout" className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl bg-red-500/50 text-white hover:bg-red-500 transition-colors">
+                    <i className="fas fa-sign-out-alt"></i>
+                </button>
+            </nav>
+            <main className="flex-1 p-8 overflow-y-auto">
+              <header className="flex justify-between items-center mb-8">
+                <h1 className="text-4xl font-extrabold text-white font-kid" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+                  Hello, {user.username}!
+                </h1>
+              </header>
+              {renderContent()}
+            </main>
+          </div>
+        </div>
+      );
+    };
+
+    // --- ADULTS COMPONENTS ---
+    
+    const AdultsLearning = ({ topics }) => {
+      const { useState } = React;
+      const [selectedTopic, setSelectedTopic] = useState(topics[0]);
+
+      return (
+        <div className="font-adult">
+          <h2 className="text-4xl font-bold text-adult-primary mb-6 border-b-2 border-gray-200 pb-2">
+            Learning Center
+          </h2>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="w-full lg:w-1/3 bg-white p-4 rounded-lg shadow-md max-h-[75vh] overflow-y-auto">
+              <h3 className="text-xl font-bold text-adult-secondary mb-4">Topics</h3>
+              <div className="space-y-2">
+                {topics.map(topic => (
+                  <button
+                    key={topic.title}
+                    onClick={() => setSelectedTopic(topic)}
+                    className={`w-full flex items-start gap-4 p-3 rounded-lg text-left transition-colors duration-200 ${selectedTopic?.title === topic.title ? 'bg-eco-green-light' : 'hover:bg-gray-100'}`}
+                  >
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-md text-adult-primary">{topic.title}</h4>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div className="w-full lg:w-2/3">
+              {selectedTopic ? (
+                <div className="bg-white p-4 rounded-lg shadow-md">
+                  <YoutubeEmbed embedId={selectedTopic.videoId} title={selectedTopic.title} />
+                  <h3 className="text-2xl font-bold text-adult-primary mt-4">{selectedTopic.title}</h3>
+                  <p className="text-gray-600 mt-2">{selectedTopic.description}</p>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full bg-white rounded-lg shadow-md">
+                  <p className="text-xl text-gray-500">Select a topic to begin.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    };
+    
+    const CarbonFootprintGame = ({ onGameComplete }) => {
+      const { useState, useMemo } = React;
+      const [choices, setChoices] = useState({
+        transport: 'car',
+        diet: 'medium',
+        energy: '50',
+      });
+      const [result, setResult] = useState(null);
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setChoices(prev => ({ ...prev, [name]: value }));
+        setResult(null);
+      };
+      
+      const calculateFootprint = () => {
+        let score = 0;
+        if (choices.transport === 'bike') score += 5;
+        else if (choices.transport === 'public') score += 15;
+        else if (choices.transport === 'car') score += 50;
+        if (choices.diet === 'vegan') score += 10;
+        else if (choices.diet === 'medium') score += 30;
+        else if (choices.diet === 'high') score += 60;
+        score += Number(choices.energy);
+        
+        setResult(score);
+      };
+      
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        calculateFootprint();
+      };
+
+      const scoreFeedback = useMemo(() => {
+          if (result === null) return null;
+          if (result < 70) return { text: "Excellent! You have a low carbon footprint.", color: "text-green-600" };
+          if (result < 120) return { text: "Good job. There are still areas to improve.", color: "text-yellow-600" };
+          return { text: "High footprint. Consider making more eco-friendly choices.", color: "text-red-600" };
+      }, [result]);
+      
+      const handleClaimPoints = () => {
+        if (result !== null) {
+          const points = Math.max(0, 150 - result); // More points for lower footprint
+          onGameComplete(points);
+        }
+      };
+
+      return (
+        <div className="p-8 bg-white rounded-lg shadow-lg font-adult">
+          <h2 className="text-3xl font-bold text-adult-primary mb-2">Carbon Footprint Calculator</h2>
+          <p className="text-gray-600 mb-6">Estimate your environmental impact based on daily choices.</p>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-lg font-semibold text-gray-700 mb-2">How do you primarily commute?</label>
+              <select name="transport" value={choices.transport} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-eco-blue">
+                <option value="bike">Bicycle / Walk</option>
+                <option value="public">Public Transport</option>
+                <option value="car">Personal Car</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-lg font-semibold text-gray-700 mb-2">What best describes your diet?</label>
+              <select name="diet" value={choices.diet} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-eco-blue">
+                <option value="vegan">Vegan / Vegetarian</option>
+                <option value="medium">Average meat consumption</option>
+                <option value="high">High meat consumption</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="energy" className="block text-lg font-semibold text-gray-700 mb-2">Monthly energy usage (in kWh): <span className="font-bold text-eco-blue">{choices.energy}</span></label>
+              <input type="range" id="energy" name="energy" min="10" max="200" value={choices.energy} onChange={handleChange} className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+            </div>
+            <button type="submit" className="w-full bg-eco-green-dark text-white font-bold py-3 px-4 rounded-lg hover:bg-eco-blue transition duration-300">
+              Calculate My Footprint
+            </button>
+          </form>
+          
+          {result !== null && (
+            <div className="mt-8 p-6 border-t-4 border-eco-blue bg-gray-50 rounded-lg text-center">
+                <p className="text-lg text-gray-700">Your estimated carbon score is:</p>
+                <p className="text-6xl font-bold text-adult-primary my-2">{result}</p>
+                <p className={`text-lg font-semibold ${scoreFeedback?.color}`}>{scoreFeedback?.text}</p>
+                <button onClick={handleClaimPoints} className="mt-4 bg-eco-blue text-white font-bold py-2 px-6 rounded-lg hover:bg-eco-green-dark transition-colors">
+                    Claim {Math.max(0, 150 - result)} Points
+                </button>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const AdultsSection = ({ user, onLogout, onUpdateScore }) => {
+      const { useState } = React;
+      const [activeTab, setActiveTab] = useState('home');
+
+      const navItems = [
+        { id: 'home', icon: 'fas fa-tachometer-alt', label: 'Dashboard' },
+        { id: 'quiz', icon: 'fas fa-graduation-cap', label: 'Quizzes' },
+        { id: 'learn', icon: 'fas fa-book', label: 'Learn' },
+        { id: 'videos', icon: 'fas fa-film', label: 'Videos' },
+        { id: 'games', icon: 'fas fa-cogs', label: 'Simulations' },
+        { id: 'leaderboard', icon: 'fas fa-chart-bar', label: 'Leaderboard' },
+      ];
+      
+      const UserProfile = ({ user }) => (
+        <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center font-adult">
+            <img src={`https://picsum.photos/seed/${user.username}/120`} alt="avatar" className="w-28 h-28 rounded-full border-4 border-gray-200" />
+            <h3 className="text-2xl font-bold text-adult-primary mt-4">{user.username}</h3>
+            <p className="text-lg text-eco-blue font-semibold">{user.score} Points</p>
+            <div className="flex space-x-3 mt-3">
+                 {BADGES.filter(b => user.score >= b.minScore).map(badge => (
+                    <div key={badge.name} className="group relative">
+                        <i className={`${badge.icon} text-2xl text-gray-500`}></i>
+                        <div className="absolute bottom-full mb-2 w-max px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            {badge.name}: {badge.description}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+      );
+
+      const renderContent = () => {
+        switch (activeTab) {
+          case 'home':
+            return (
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-1">
+                        <UserProfile user={user} />
+                    </div>
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="bg-white p-6 rounded-lg shadow-md font-adult">
+                            <h2 className="text-3xl font-bold text-adult-primary mb-2">Welcome Back, {user.username}</h2>
+                            <p className="text-gray-600">Your actions today shape tomorrow. Continue your journey to become an eco-champion.</p>
+                        </div>
+                        <div className="bg-white p-6 rounded-lg shadow-md font-adult">
+                          <h3 className="text-2xl font-bold text-adult-primary mb-4">This Week's Eco-Challenges</h3>
+                          <div className="space-y-4">
+                            {ADULTS_ECO_CHALLENGES.map(challenge => (
+                              <div key={challenge.title} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                                <div className="w-10 h-10 bg-eco-green-light rounded-full flex items-center justify-center">
+                                    <i className={`${challenge.icon} text-eco-green-dark text-xl`}></i>
+                                </div>
+                                <div className="flex-1">
+                                    <p className="font-semibold text-gray-800">{challenge.title}</p>
+                                    <p className="text-sm text-gray-500">{challenge.description}</p>
+                                </div>
+                                <button className="font-bold text-eco-blue hover:underline whitespace-nowrap">+ {challenge.points} pts</button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            );
+          case 'quiz':
+            return <Quiz questions={ADULTS_QUIZ_QUESTIONS} isKid={false} onQuizComplete={onUpdateScore} />;
+          case 'learn':
+            return <AdultsLearning topics={ADULTS_LEARNING_TOPICS} />;
+          case 'videos':
+            return <VideoGallery videos={ADULTS_VIDEOS} isKid={false} />;
+          case 'games':
+            return <CarbonFootprintGame onGameComplete={onUpdateScore} />;
+          case 'leaderboard':
+            return <Leaderboard data={ADULTS_LEADERBOARD_DATA} user={user} isKid={false} />;
+          default:
+            return <div>Home</div>;
+        }
+      };
+
+      return (
+        <div className="min-h-screen bg-gray-100 font-adult flex">
+            <nav className="w-64 bg-white p-6 flex flex-col shadow-lg">
+                <div className="flex items-center space-x-2 mb-10">
+                     <i className="fas fa-leaf text-3xl text-eco-green-dark"></i>
+                     <span className="text-2xl font-bold text-adult-primary">Eco Learner</span>
+                </div>
+                <ul className="space-y-2 flex-1">
+                     {navItems.map(item => (
+                      <li key={item.id}>
+                        <button
+                          onClick={() => setActiveTab(item.id)}
+                          className={`w-full flex items-center space-x-3 p-3 rounded-lg text-lg transition-colors ${activeTab === item.id ? 'bg-eco-green-dark text-white' : 'text-adult-secondary hover:bg-gray-200'}`}
+                        >
+                          <i className={`${item.icon} w-6 text-center`}></i>
+                          <span>{item.label}</span>
+                        </button>
+                      </li>
+                    ))}
+                </ul>
+                <button onClick={onLogout} className="w-full flex items-center space-x-3 p-3 rounded-lg text-lg text-red-600 hover:bg-red-100 transition-colors">
+                    <i className="fas fa-sign-out-alt w-6 text-center"></i>
+                    <span>Logout</span>
+                </button>
+            </nav>
+            <main className="flex-1 p-8 overflow-y-auto">
+               {renderContent()}
+            </main>
+        </div>
+      );
+    };
+
+    // --- MAIN APP COMPONENT ---
+    const App = () => {
+      const { useState, useEffect, useCallback } = React;
+      const [user, setUser] = useState(null);
+      const [view, setView] = useState(View.LOGIN);
+      const [usernameInput, setUsernameInput] = useState('');
+      const [ageInput, setAgeInput] = useState('');
+
+      useEffect(() => {
+        try {
+          const savedUser = localStorage.getItem('eco-learner-user');
+          if (savedUser) {
+            const parsedUser = JSON.parse(savedUser);
+            setUser(parsedUser);
+            if (parsedUser.age < 13) {
+              setView(View.KIDS_SECTION);
+            } else {
+              setView(View.ADULTS_SECTION);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to parse user from localStorage", error);
+          localStorage.removeItem('eco-learner-user');
+        }
+      }, []);
+
+      const handleLogin = (e) => {
+        e.preventDefault();
+        if (usernameInput.trim()) {
+          setUser({
+            username: usernameInput.trim(),
+            age: 0, 
+            score: 0,
+            badges: [],
+          });
+          setView(View.AGE_PROMPT);
+        }
+      };
+
+      const handleAgeSubmit = (e) => {
+        e.preventDefault();
+        const age = parseInt(ageInput, 10);
+        if (user && !isNaN(age) && age > 0) {
+          const updatedUser = { ...user, age };
+          setUser(updatedUser);
+          localStorage.setItem('eco-learner-user', JSON.stringify(updatedUser));
+          if (age < 13) {
+            setView(View.KIDS_SECTION);
+          } else {
+            setView(View.ADULTS_SECTION);
+          }
+        }
+      };
+      
+      const handleUpdateScore = useCallback((points) => {
+        setUser(currentUser => {
+          if (!currentUser) return null;
+          const updatedUser = { ...currentUser, score: currentUser.score + points };
+          localStorage.setItem('eco-learner-user', JSON.stringify(updatedUser));
+          return updatedUser;
+        });
+      }, []);
+
+      const handleLogout = () => {
+        localStorage.removeItem('eco-learner-user');
+        setUser(null);
+        setUsernameInput('');
+        setAgeInput('');
+        setView(View.LOGIN);
+      };
+
+      const renderContent = () => {
+        switch (view) {
+          case View.LOGIN:
+            return (
+              <div className="flex flex-col items-center justify-center min-h-screen bg-eco-green-light font-adult">
+                <div className="p-10 bg-white rounded-2xl shadow-2xl text-center max-w-md w-full">
+                  <i className="fas fa-leaf text-6xl text-eco-green-dark mb-4"></i>
+                  <h1 className="text-4xl font-bold text-eco-green-dark mb-2">Welcome to Eco Learner!</h1>
+                  <p className="text-gray-600 mb-8">Let's save the planet together.</p>
+                  <form onSubmit={handleLogin} className="space-y-6">
+                    <input
+                      type="text"
+                      value={usernameInput}
+                      onChange={(e) => setUsernameInput(e.target.value)}
+                      placeholder="Enter your name"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-eco-blue"
+                    />
+                    <button type="submit" className="w-full bg-eco-green-dark text-white font-bold py-3 px-4 rounded-lg hover:bg-eco-blue transition duration-300">
+                      Start Learning
+                    </button>
+                  </form>
+                </div>
+              </div>
+            );
+          case View.AGE_PROMPT:
+            return (
+              <div className="flex flex-col items-center justify-center min-h-screen bg-eco-green-light font-adult">
+                <div className="p-10 bg-white rounded-2xl shadow-2xl text-center max-w-md w-full">
+                   <i className="fas fa-birthday-cake text-6xl text-eco-blue mb-4"></i>
+                  <h1 className="text-3xl font-bold text-eco-green-dark mb-2">How old are you?</h1>
+                   <p className="text-gray-600 mb-8">This helps us create the best experience for you.</p>
+                  <form onSubmit={handleAgeSubmit} className="space-y-6">
+                    <input
+                      type="number"
+                      value={ageInput}
+                      onChange={(e) => setAgeInput(e.target.value)}
+                      placeholder="Enter your age"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-eco-blue"
+                    />
+                    <button type="submit" className="w-full bg-eco-blue text-white font-bold py-3 px-4 rounded-lg hover:bg-eco-green-dark transition duration-300">
+                      Continue
+                    </button>
+                  </form>
+                </div>
+              </div>
+            );
+          case View.KIDS_SECTION:
+            if (user) return <KidsSection user={user} onLogout={handleLogout} onUpdateScore={handleUpdateScore} />;
+            return null;
+          case View.ADULTS_SECTION:
+            if (user) return <AdultsSection user={user} onLogout={handleLogout} onUpdateScore={handleUpdateScore} />;
+            return null;
+          default:
+            return <div className="flex items-center justify-center h-full">Loading...</div>;
+        }
+      };
+
+      return <div className="App h-full">{renderContent()}</div>;
+    };
+
+
+    // --- RENDER THE APP ---
+    const rootElement = document.getElementById('root');
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    );
+
+    // --- END OF COMBINED APPLICATION CODE ---
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
